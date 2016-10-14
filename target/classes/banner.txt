@@ -1,7 +1,0 @@
-WW               WW                     tt     hh
- WW             WW                     tttttt  hh 
-  WW     W     WW                       tt     hh
-   WW   WWW   WW   .d8888b.  .d8888b.   tt     hhhhhh   .d8888b.  RRrrrrr
-    WW WW WW WW    88____d8  88'  `88|  tt     hh  'hh  88____d8  RR''''
-     WWW   WWW     88.       88.  .88|  tt_    hh   hh  88.       RR
-      WW   WW      '88888P'   88888P8|   tttt  hh   hh  '88888P'  RR 
