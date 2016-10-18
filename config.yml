@@ -2,5 +2,3 @@ logging:
   level: INFO
   loggers:
     io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper: DEBUG
-
-template: "Hello, the weather forecast for %s is...."

@@ -2,7 +2,7 @@ package uk.gov.dvla.health;
 
 import com.codahale.metrics.health.HealthCheck;
 
-public class TemplateHealthCheck {
+public class TemplateHealthCheck extends HealthCheck {
 
     private final String template;
 
