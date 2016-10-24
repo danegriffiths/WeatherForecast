@@ -1,3 +1,5 @@
+template: "Hello %s"
+
 logging:
   level: INFO
   loggers:

@@ -22,15 +22,14 @@ public class WeatherForecastGenerator extends Application<WeatherConfig>{
         return "WeatherForecast";
     }
 
+    @Override
     public void initialize(Bootstrap<WeatherConfig> bootstrap) {
-        // nothing to do yet
     }
 
-    public void run(WeatherConfig configuration, Environment environment) {
+    public void run(WeatherConfig configuration, Environment environment) throws Exception{
 
         final WeatherResource resource = new WeatherResource();
         final TemplateHealthCheck healthCheck = new TemplateHealthCheck(configuration.getTemplate());
-
         environment.jersey().register(resource);
         environment.healthChecks().register("template", healthCheck);
     }

@@ -103,5 +103,6 @@
     <orderEntry type="library" name="Maven: net.sourceforge.argparse4j:argparse4j:0.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.toolchain.setuid:jetty-setuid-java:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: com.codahale.metrics:metrics-healthchecks:3.0.0-RC1" level="project" />
+    <orderEntry type="library" name="Maven: com.smoketurner:dropwizard-swagger:1.0.0-1" level="project" />
   </component>
 </module>
