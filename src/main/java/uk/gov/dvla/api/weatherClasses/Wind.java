@@ -1,4 +1,4 @@
-package uk.gov.dvla.weatherClasses;
+package uk.gov.dvla.api.weatherClasses;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

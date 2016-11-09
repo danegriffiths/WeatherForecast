@@ -3,8 +3,9 @@ package uk.gov.dvla.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.gov.dvla.api.WeatherAPI;
+import uk.gov.dvla.api.weatherClasses.CityForecastData;
+import uk.gov.dvla.jdbi.Database;
 import uk.gov.dvla.jdbi.MyDAO;
-import uk.gov.dvla.weatherClasses.CityForecastData;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,6 +19,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -29,64 +32,82 @@ public class WeatherResource {
 
     private MyDAO dao;
 
-    public WeatherResource(MyDAO dao){
-        this.dao=dao;
+    public WeatherResource(MyDAO dao) {
+        this.dao = dao;
     }
 
     @GET
     @Timed
     public Optional<WeatherAPI> getWeather(@QueryParam("city") Optional<String> city) {
 
+        return getForecast(city);
+    }
+
+    /**
+     * Method to obtain weather forecast.
+     * @param city
+     * @return
+     */
+    private Optional<WeatherAPI> getForecast(Optional<String> city) {
+
         Optional<WeatherAPI> weatherResult = Optional.empty();
-
-        String cityFromOptional = city.get();
-
-        if (dao.findNameById(cityFromOptional) == null) {
-//            System.out.printf("Checkpoint 1 Null: %s isn't here; add to db!\n", cityFromOptional);
-            String date = "2016-11-04 11:00:00";
-            Timestamp y = Timestamp.valueOf(date);
-            dao.insert(cityFromOptional,"100","sunny",y);
-//            System.out.printf("Database updated to include forecast of %s!\n", cityFromOptional);
+        if (city.isPresent()) {
+            weatherResult = getForecastFromDatabase(city.get());
         }
-        else {
-//            System.out.printf("Checkpoint 1 notNull: %s is present!\n", cityFromOptional);
-            if (dao.oldestDate(cityFromOptional) == null) {
-//                System.out.println("Checkpoint 2: Dates up do date. Give data");
-            }
-            else {
-//                System.out.println("Checkpoint 3: Need to update database!!!");
-                dao.delete(cityFromOptional);
 
-                String date = "2016-11-04 11:00:00";
-                Timestamp y = Timestamp.valueOf(date);
-                dao.insert(cityFromOptional,"100","sunny",y);
-//                System.out.printf("Database updated to include forecast of %s!\n", dao.oldestDate(cityFromOptional));
-            }
+        else if (!weatherResult.isPresent()/** || dao.oldestDate(city.get()) != null*/) {
+            dao.delete(city.get());
+            weatherResult = getForecastFromURL(weatherResult, city);
         }
+        return weatherResult;
+    }
+
+    /**
+     * Method to get data from PostgreSQL.
+     * @param city dsfsd
+     * @return weatherResult
+     */
+    private Optional<WeatherAPI> getForecastFromDatabase(String city) {
+
+        ArrayList<Database> ldbapi = new ArrayList<>(dao.getListFromDB(city));
+
+        return Optional.of(new WeatherAPI(ldbapi));
+    }
+
+    /**
+     * Method to get data from URL.
+     * @param city sdf
+     * @return d
+     */
+    private Optional<WeatherAPI> getForecastFromURL(Optional<WeatherAPI> weatherResult, Optional<String> city) {
 
         try {
-            final URL url = new URL(String.format("http://api.openweathermap.org/data/2.5/forecast/weather?q=%s&APPID=3e90ae313c2c602239cded5167a9aa54", URLEncoder.encode( city.orElse(""), "UTF-8" ) ) );
-            final URLConnection urlConn=url.openConnection();
+            final URL url = new URL(String.format("http://api.openweathermap.org/data/2.5/forecast/weather?q=%s&APPID=3e90ae313c2c602239cded5167a9aa54", URLEncoder.encode(city.orElse(""), "UTF-8")));
+            final URLConnection urlConn = url.openConnection();
             ObjectMapper objMap = new ObjectMapper();
-            CityForecastData cfd = objMap.readValue(urlConn.getInputStream(),CityForecastData.class);
+            CityForecastData cfd = objMap.readValue(urlConn.getInputStream(), CityForecastData.class);
+
+            DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
+            for (int i = 0; i < cfd.getForecasts().size(); i++){
+
+                String cityName = cfd.getCity().getCityName().toLowerCase();
+                String temp = df2.format(cfd.getForecasts().get(i).getWeatherTemp().getTemperature());
+                String forecast = cfd.getForecasts().get(i).getWeatherDescription().get(0).getDetailedWeatherType();
+                Timestamp dateTime = Timestamp.valueOf(cfd.getForecasts().get(i).getDateTime());
+
+                dao.insert(cityName,temp,forecast, dateTime);
+            }
 
             weatherResult = Optional.of(new WeatherAPI(cfd));
-        }
-        catch (MalformedURLException ex ) {
+        } catch (MalformedURLException ex) {
             ex.printStackTrace();
-        }
-        catch (UnsupportedEncodingException uce) {
+        } catch (UnsupportedEncodingException uce) {
             uce.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
-
+        } finally {
             return weatherResult;
         }
     }
-
-
-
 }
+
