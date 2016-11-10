@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
+/**
+ * Class which reads in data from website, and assigns the json property to the specific variables within ListOfForecasts.
+ * Created by dane on 10/10/16.
+ */
 public class ListOfForecasts {
 
     private int unixTimeStamp;
@@ -33,38 +37,26 @@ public class ListOfForecasts {
         this.dateTime=dateTime;
     }
 
-    public int getUnixTimeStamp() {
-        return unixTimeStamp;
-    }
-
+    /**
+     * Method to get the temperature/pressure of a city at a given time.
+     * @return a TempPressure obect.
+     */
     public TempPressure getWeatherTemp() {
         return weatherTemp;
     }
 
+    /**
+     * Method to ge tthe weather description of the cirty at a given time.
+     * @return an arraylist made up of a WeatherDescription object.
+     */
     public ArrayList<WeatherDescription> getWeatherDescription() {
         return weatherDescription;
     }
 
-    public Clouds getClouds() {
-        return clouds;
-    }
-
-    public Wind getWind() {
-        return wind;
-    }
-
-    public Rain getRain() {
-        return rain;
-    }
-
-    public Snow getSnow() {
-        return snow;
-    }
-
-    public SystemItem getSysItem() {
-        return sysItem;
-    }
-
+    /**
+     * Method to ge the date/time of the forecast.
+     * @return a string containing the date and time.
+     */
     public String getDateTime() {
         return dateTime;
     }

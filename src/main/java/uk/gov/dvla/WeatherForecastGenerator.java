@@ -9,6 +9,9 @@ import uk.gov.dvla.jdbi.MyDAO;
 import uk.gov.dvla.health.TemplateHealthCheck;
 import uk.gov.dvla.resources.WeatherResource;
 
+/**
+ * The main class which implements the jersey api by passing in a DBI and DAO.
+ */
 public class WeatherForecastGenerator extends Application<WeatherConfig> {
 
     public static void main(String[] args) throws Exception {

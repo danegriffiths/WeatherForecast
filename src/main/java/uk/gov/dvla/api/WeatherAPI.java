@@ -4,53 +4,89 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import uk.gov.dvla.api.weatherClasses.CityForecastData;
-import uk.gov.dvla.jdbi.Database;
+import uk.gov.dvla.jdbi.DatabaseWrapper;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * A class which is constructed in several ways, which prints the 5 day weatherList forecast of a city to the web browser.
+ */
 public class WeatherAPI {
 
-    private CityForecastData cfd;
-    private ArrayList<Database> dbapi;
     private String city;
     private String dateTime;
     private String forecast;
     private String temperature;
-    private ArrayList<WeatherAPI> weather;
+    private List<WeatherAPI> weatherList;
 
-    public WeatherAPI(String city, String dateTime, String forecast, String temperature) {
+    private WeatherAPI(String city, String dateTime, String forecast, String temperature) {
         this.city=city;
         this.dateTime=dateTime;
         this.forecast=forecast;
         this.temperature=temperature;
     }
 
-    public WeatherAPI(CityForecastData cfd) {
-        this.cfd=cfd;
+    private WeatherAPI() {
+        weatherList = new ArrayList<>();
     }
 
-    public WeatherAPI(ArrayList<Database> dbapi) {
-        this.dbapi = dbapi;
+    /**
+     * Create a Weather API based on data from the website.
+     * @param dataFromURL a CityForecast object which contains deserialised JSON data.
+     */
+    public WeatherAPI(CityForecastData dataFromURL) {
+        this();
+        weatherList = populateWithURLData(dataFromURL);
     }
 
-    public String getCity() {
+    /**
+     * Create a Weather API based on data from the database.
+     * @param dataFromDatabase a DatabaseWrapper object which contains data already saved to the database.
+     */
+    public WeatherAPI(List<DatabaseWrapper> dataFromDatabase) {
+        this();
+        weatherList = getDBData(dataFromDatabase);
+    }
+
+    /**
+     * Method to get the name of the city.
+     * @return string containing city name.
+     */
+    private String getCity() {
         return city;
     }
 
-    public String getDateTime() {
+    /**
+     * Method to get the date/time of day.
+     * @return string containing date and time.
+     */
+    private String getDateTime() {
         return dateTime;
     }
 
-    public String getForecast() {
+    /**
+     * Method to get the forecast at the time of day.
+     * @return string containing the forecast.
+     */
+    private String getForecast() {
         return forecast;
     }
 
-    public String getTemperature() {
+    /**
+     * Method to get the temperature at the time of day.
+     * @return string containing temperature.
+     */
+    private String getTemperature() {
         return temperature;
     }
 
-    private ArrayList<WeatherAPI> getURLData(CityForecastData cfd) {
+    /**
+     * Method to get convert the deserialised JSON data into a WeatherAPI object..
+     * @return a list of type WeatherAPI containing the entire forecast for a city.
+     */
+    private List<WeatherAPI> populateWithURLData(CityForecastData cfd) {
 
         DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
 
@@ -60,50 +96,49 @@ public class WeatherAPI {
             this.forecast = cfd.getForecasts().get(i).getWeatherDescription().get(0).getDetailedWeatherType();
             this.temperature = df2.format(cfd.getForecasts().get(i).getWeatherTemp().getTemperature());
 
-            weather.add(new WeatherAPI(city, dateTime, forecast, temperature));
+            weatherList.add(new WeatherAPI(city, dateTime, forecast, temperature));
         }
-        return weather;
+        return weatherList;
     }
 
-    private ArrayList<WeatherAPI> getDBData(ArrayList<Database> db) {
+    /**
+     * Method to get convert the data from the database into a WeatherAPI object..
+     * @return a list of type WeatherAPI containing the entire forecast for a city.
+     */
+    private List<WeatherAPI> getDBData(List<DatabaseWrapper> db) {
 
         DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
 
-        for (int i = 0; i < db.size(); i++) {
-            this.city = db.get(i).getCity();
-            this.dateTime = db.get(i).getDateTime();
-            this.forecast = db.get(i).getForecast();
-            this.temperature = df2.format(db.get(i).getTemperature());
+        for (DatabaseWrapper aDb : db) {
+            this.city = aDb.getCity().trim();
+            this.dateTime = aDb.getDateTime().trim();
+            this.forecast = aDb.getForecast().trim();
+            this.temperature =aDb.getTemperature().trim();
 
-            weather.add(new WeatherAPI(city, dateTime, forecast, temperature));
+            weatherList.add(new WeatherAPI(city, dateTime, forecast, temperature));
         }
-        return weather;
+        return weatherList;
     }
 
+    /**
+     * Method which converts the WeatherAPI objects into JSON format, and adds them to a JSON array, which will print the object to the browser.
+     * @return a JSON array containing the weather forecast data.
+     */
     @JsonProperty
-    public JSONArray get3HourlyWeatherForecastFromURL() {
+    public JSONArray getWeatherForecast() {
 
-        ArrayList<WeatherAPI> weather;
+        JSONArray jsonArray = new JSONArray();
 
-        if (cfd != null) {
-            weather = getURLData(cfd);
+        for (WeatherAPI listOfForecasts : weatherList) {
+
+            //DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("city", listOfForecasts.getCity());
+            jsonObject.put("date/time", listOfForecasts.getDateTime());
+            jsonObject.put("forecast", listOfForecasts.getForecast());
+            jsonObject.put("temp", listOfForecasts.getTemperature());
+            jsonArray.add(jsonObject);
         }
-        else {
-            weather = getDBData(dbapi);
-        }
-
-        JSONArray dateTime = new JSONArray();
-
-        for (int i = 0; i < weather.size(); i++) {
-
-            DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
-            JSONObject jo = new JSONObject();
-            jo.put("city", weather.get(i).city);
-            jo.put("date/time", weather.get(i).dateTime);
-            jo.put("forecast", weather.get(i).forecast);
-            jo.put("temp", weather.get(i).temperature);
-            dateTime.add(jo);
-        }
-        return dateTime;
+        return jsonArray;
     }
 }

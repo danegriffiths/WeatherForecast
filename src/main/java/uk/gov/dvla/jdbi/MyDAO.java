@@ -6,9 +6,12 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.List;
 
-@RegisterMapper(DatabaseAPIMapper.class)
+/**
+ * An interface which is used to communicate with the Postgres database, and either return items from the database, or update the database.
+ */
+@RegisterMapper(DatabaseResultMapper.class)
 public interface MyDAO {
 
     @SqlUpdate("insert into forecasts (city, temperature, forecast, date_time) values (:city,:temperature,:forecast,:date_time)")
@@ -22,10 +25,10 @@ public interface MyDAO {
 
     //To check if there is a date older than 3 hours.
     @SqlQuery("select city, date_time from forecasts where city = :city and date_time < now() - '3 hours'::interval;")
-    String oldestDate(@Bind("city") String city);
+    String checkOldestDate(@Bind("city") String city);
 
     @SqlQuery("Select city, date_time, temperature, forecast from forecasts where city = :city")
-    ArrayList<Database> getListFromDB(@Bind("city") String city);
+    List<DatabaseWrapper> getListFromDB(@Bind("city") String city);
 
     /**
      * close with no args is used to close the connection

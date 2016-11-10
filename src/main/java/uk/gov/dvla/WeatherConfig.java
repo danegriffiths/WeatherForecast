@@ -8,6 +8,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+/**
+ * A class containing configuration methods to access yaml/postrges files.
+ */
 public class WeatherConfig extends Configuration {
 
     @NotEmpty

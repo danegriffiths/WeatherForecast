@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 /**
- * Created by dane on 13/10/16.
+ * Class which reads in data from website, and assigns the json property to the specific variable within CityForecastData.
+ * Created by dane on 10/10/16.
  */
 public class CityForecastData {
 
@@ -27,22 +28,18 @@ public class CityForecastData {
         this.forecasts=forecasts;
     }
 
+    /**
+     * Method to return the details of the city.
+     * @return object CityDetails.
+     */
     public CityDetails getCity() {
         return city;
     }
 
-    public int getOpenWeatherInternalParameter() {
-        return openWeatherInternalParameter;
-    }
-
-    public double getOpenWeatherInternalMessage() {
-        return openWeatherInternalMessage;
-    }
-
-    public int getCountOfCitiesCirculatingCityChoice() {
-        return countOfCitiesCirculatingCityChoice;
-    }
-
+    /**
+     * Method to get the list of forecasts for the city.
+     * @return an arraylist which is made of a ListOfForecasts object.
+     */
     public ArrayList<ListOfForecasts> getForecasts() {
         return forecasts;
     }

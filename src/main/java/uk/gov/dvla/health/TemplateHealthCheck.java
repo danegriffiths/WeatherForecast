@@ -2,6 +2,9 @@ package uk.gov.dvla.health;
 
 import com.codahale.metrics.health.HealthCheck;
 
+/**
+ * Class to health check the functionality of the dropwizard client.
+ */
 public class TemplateHealthCheck extends HealthCheck {
 
     private final String template;

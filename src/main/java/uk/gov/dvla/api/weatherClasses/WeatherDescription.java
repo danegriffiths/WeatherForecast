@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class WeatherDescription {
 
+    /**
+     * Class which reads in data from website, and assigns the json property to the specific variables within WeatherDescription.
+     * Created by dane on 10/10/16.
+     */
     private int iD;
     private String weatherType;
     private String detailedWeatherType;
@@ -19,19 +23,11 @@ public class WeatherDescription {
         this.weatherIcon=weatherIcon;
     }
 
-    public int getiD() {
-        return iD;
-    }
-
-    public String getWeatherType() {
-        return weatherType;
-    }
-
+    /**
+     * Method to get the detailed forecast at a particular time for a city.
+     * @return a String with the forecast.
+     */
     public String getDetailedWeatherType() {
         return detailedWeatherType;
-    }
-
-    public String getWeatherIcon() {
-        return weatherIcon;
     }
 }

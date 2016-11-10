@@ -3,6 +3,10 @@ package uk.gov.dvla.api.weatherClasses;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class which reads in data from website, and assigns the json property to the specific variables within TempPressure.
+ * Created by dane on 10/10/16.
+ */
 public class TempPressure {
 
     private double temperature;
@@ -29,36 +33,11 @@ public class TempPressure {
         this.tempKF=tempKF;
     }
 
+    /**
+     * Method to get the temperate at a specific time in a city.
+     * @return a double containing the temperature.
+     */
     public double getTemperature() {
         return temperature -273.15;
     }
-
-    public double getMinimumTemp() {
-        return minimumTemp;
-    }
-
-    public double getMaximumTemp() {
-        return maximumTemp;
-    }
-
-    public double getPressure() {
-        return pressure;
-    }
-
-    public double getSeaLevel() {
-        return seaLevel;
-    }
-
-    public double getGroundLevel() {
-        return groundLevel;
-    }
-
-    public int getHumidity() {
-        return humidity;
-    }
-
-    public double getTempKF() {
-        return tempKF;
-    }
-
 }

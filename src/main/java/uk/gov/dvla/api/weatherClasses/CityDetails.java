@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
+ * Class which reads in data from website, and assigns the json property to the specific variable within CityDetails.
  * Created by dane on 10/10/16.
  */
 public class CityDetails {
@@ -27,28 +28,12 @@ public class CityDetails {
         this.systPop=systPop;
     }
 
-    public int getCityID() {
-        return cityID;
-    }
-
+    /**
+     * Method to get the name of the city.
+     * @return a string containing the city name.
+     */
     public String getCityName() {
         return cityName;
-    }
-
-    public Coordinates getCoords() {
-        return coords;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public int getPopulation() {
-        return population;
-    }
-
-    public SystemPopulation getSystPop() {
-        return systPop;
     }
 }
 
