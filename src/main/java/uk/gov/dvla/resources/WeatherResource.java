@@ -119,8 +119,8 @@ public class WeatherResource {
 
                 dao.insert(cityName,temp,forecast, dateTime);
             }
-
-            weatherResult = Optional.of(new WeatherAPI(cfd));
+            List<DatabaseWrapper> ldbapi = dao.getListFromDB(city.get());
+            weatherResult = Optional.of(new WeatherAPI(ldbapi));
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         } catch (UnsupportedEncodingException uce) {

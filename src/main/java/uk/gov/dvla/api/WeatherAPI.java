@@ -111,10 +111,11 @@ public class WeatherAPI {
 
         for (DatabaseWrapper aDb : db) {
             this.city = aDb.getCity().trim();
-            this.dateTime = aDb.getDateTime().trim();
+            this.dateTime = aDb.getDateTime().substring(0,19);
             this.forecast = aDb.getForecast().trim();
             this.temperature =aDb.getTemperature().trim();
 
+            System.out.println(this.dateTime);
             weatherList.add(new WeatherAPI(city, dateTime, forecast, temperature));
         }
         return weatherList;
