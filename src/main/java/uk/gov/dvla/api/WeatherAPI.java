@@ -115,7 +115,6 @@ public class WeatherAPI {
             this.forecast = aDb.getForecast().trim();
             this.temperature =aDb.getTemperature().trim();
 
-            System.out.println(this.dateTime);
             weatherList.add(new WeatherAPI(city, dateTime, forecast, temperature));
         }
         return weatherList;
