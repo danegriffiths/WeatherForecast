@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Wind {
 
     private double windSpeed;
-    private int windDegrees;
+    private double windDegrees;
 
     @JsonCreator
-    private Wind(@JsonProperty("speed") double speed, @JsonProperty("deg") int windDegrees) {
+    public Wind(@JsonProperty("speed") double speed, @JsonProperty("deg") double windDegrees) {
         this.windSpeed=speed;
         this.windDegrees=windDegrees;
     }

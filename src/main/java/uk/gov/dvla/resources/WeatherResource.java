@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.gov.dvla.api.WeatherAPI;
 import uk.gov.dvla.api.weatherClasses.CityForecastData;
 import uk.gov.dvla.jdbi.DatabaseWrapper;
-import uk.gov.dvla.jdbi.MyDAO;
+import uk.gov.dvla.jdbi.WeatherDAO;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,9 +31,9 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class WeatherResource {
 
-    private MyDAO dao;
+    private WeatherDAO dao;
 
-    public WeatherResource(MyDAO dao) {
+    public WeatherResource(WeatherDAO dao) {
         this.dao = dao;
     }
 
@@ -45,7 +45,7 @@ public class WeatherResource {
     @GET
     @Timed
     public Optional<WeatherAPI> getWeather(@QueryParam("city") Optional<String> city) {
-
+        System.out.println( "** getWeather()" );
         return getForecast(city);
     }
 
@@ -55,30 +55,37 @@ public class WeatherResource {
      * @return an optional weather forecast of the city entered by the user, if there is one available.
      */
     private Optional<WeatherAPI> getForecast(Optional<String> city) {
+        System.out.println( "** getForecast() " );
 
         Optional<WeatherAPI> weatherResult = Optional.empty();
 
         if (city.isPresent()) { //checks if the city has been entered by the user.
-
+            System.out.println( "** -- city present" );
             if (dao.findNameById(city.get()) != null) { //checks if the name of the city is already in database.
-
+                System.out.println( "** -- city found" );
                 if (dao.checkOldestDate(city.get()) == null) { // if name in database, checks if data is out of date.
+                    System.out.println( "** -- city found, data in date" );
                     weatherResult = getForecastFromDatabase(city.get()); // if so, get data from database.
 
                     if (!weatherResult.isPresent()) { // if database is empty, go to URL to get data.
-
+                        System.out.println( "** -- database empty" );
                         weatherResult = getForecastFromURL(city);
                     }
                 }
                 else{
                     dao.delete(city.get()); // if data is out of date, delete, then go to URL to update.
+                    System.out.println( "** -- city found, data out of date" );
                     weatherResult = getForecastFromURL(city);
                 }
             }
             else {
                 weatherResult = getForecastFromURL(city); // if name not already in database, then go to URL to get data.
+                System.out.println( "** -- city not found" );
             }
         }
+
+        System.out.println( weatherResult );
+
         return weatherResult;
     }
 
@@ -89,9 +96,10 @@ public class WeatherResource {
      */
     private Optional<WeatherAPI> getForecastFromDatabase(String city) {
 
-        List<DatabaseWrapper> ldbapi = dao.getListFromDB(city);
-
-        return Optional.of(new WeatherAPI(ldbapi));
+        System.out.println("getting data from DB");
+        List<DatabaseWrapper> listOfDBForecasts = dao.getListFromDB(city);
+        System.out.println(new WeatherAPI(listOfDBForecasts));
+        return Optional.of(new WeatherAPI(listOfDBForecasts));
     }
 
     /**
@@ -105,28 +113,27 @@ public class WeatherResource {
         try {
 
             final URL url = new URL(String.format("http://api.openweathermap.org/data/2.5/forecast/weather?q=%s&APPID=3e90ae313c2c602239cded5167a9aa54", URLEncoder.encode(city.orElse(""), "UTF-8")));
-            final URLConnection urlConn = url.openConnection();
-            ObjectMapper objMap = new ObjectMapper();
-            CityForecastData cfd = objMap.readValue(urlConn.getInputStream(), CityForecastData.class);
+            final URLConnection urlConnection = url.openConnection();
+            ObjectMapper objMapper = new ObjectMapper();
+            CityForecastData dataMappedFromURL = objMapper.readValue(urlConnection.getInputStream(), CityForecastData.class);
 
-            DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
-            for (int i = 0; i < cfd.getForecasts().size(); i++){
+            DecimalFormat formatTemperature = new DecimalFormat("#.#\u00B0C");
+            for (int i = 0; i < dataMappedFromURL.getForecasts().size(); i++){
 
-                String cityName = cfd.getCity().getCityName().toLowerCase();
-                String temp = df2.format(cfd.getForecasts().get(i).getWeatherTemp().getTemperature());
-                String forecast = cfd.getForecasts().get(i).getWeatherDescription().get(0).getDetailedWeatherType();
-                Timestamp dateTime = Timestamp.valueOf(cfd.getForecasts().get(i).getDateTime());
-
+                String cityName = dataMappedFromURL.getCity().getCityName().toLowerCase();
+                String temp = formatTemperature.format(dataMappedFromURL.getForecasts().get(i).getWeatherTemp().getTemperature());
+                String forecast = dataMappedFromURL.getForecasts().get(i).getWeatherDescription().get(0).getDetailedWeatherType();
+                Timestamp dateTime = Timestamp.valueOf(dataMappedFromURL.getForecasts().get(i).getDateTime());
                 dao.insert(cityName,temp,forecast, dateTime);
             }
-            List<DatabaseWrapper> ldbapi = dao.getListFromDB(city.get());
-            weatherResult = Optional.of(new WeatherAPI(ldbapi));
-        } catch (MalformedURLException ex) {
+
+//            List<DatabaseWrapper> listOfDBForecasts = dao.getListFromDB(city.get());
+            weatherResult = Optional.of(new WeatherAPI(dataMappedFromURL));
+
+        } catch (MalformedURLException | UnsupportedEncodingException ex) {
             ex.printStackTrace();
-        } catch (UnsupportedEncodingException uce) {
-            uce.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         } finally {
             return weatherResult;
         }

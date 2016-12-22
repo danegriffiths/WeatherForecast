@@ -12,7 +12,7 @@ import java.util.List;
  * An interface which is used to communicate with the Postgres database, and either return items from the database, or update the database.
  */
 @RegisterMapper(DatabaseResultMapper.class)
-public interface MyDAO {
+public interface WeatherDAO {
 
     @SqlUpdate("insert into forecasts (city, temperature, forecast, date_time) values (:city,:temperature,:forecast,:date_time)")
     void insert(@Bind("city") String city, @Bind("temperature") String temperature, @Bind("forecast") String forecast, @Bind("date_time") Timestamp date_time);
@@ -29,6 +29,12 @@ public interface MyDAO {
 
     @SqlQuery("Select city, date_time, temperature, forecast from forecasts where city = :city")
     List<DatabaseWrapper> getListFromDB(@Bind("city") String city);
+
+    @SqlQuery("Select city, date_time, temperature, forecast from forecasts where city = :city")
+    List<DatabaseWrapper> getListFromDBTest(@Bind("city") String city);
+
+    @SqlQuery("Select count(*) from forecasts")
+    int countTotalRows();
 
     /**
      * close with no args is used to close the connection

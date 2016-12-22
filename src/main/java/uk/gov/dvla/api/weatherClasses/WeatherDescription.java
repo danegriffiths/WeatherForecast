@@ -15,7 +15,7 @@ public class WeatherDescription {
     private String weatherIcon;
 
     @JsonCreator
-    private WeatherDescription(@JsonProperty("id") int iD, @JsonProperty("main") String weatherType, @JsonProperty("description") String detailedWeatherType,
+    public WeatherDescription(@JsonProperty("id") int iD, @JsonProperty("main") String weatherType, @JsonProperty("description") String detailedWeatherType,
                                @JsonProperty("icon") String weatherIcon) {
         this.iD=iD;
         this.weatherType=weatherType;

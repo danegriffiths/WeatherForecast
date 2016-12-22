@@ -13,7 +13,7 @@ public class Coordinates {
     private double latitude;
 
     @JsonCreator
-    private Coordinates(@JsonProperty("lon") double longitude, @JsonProperty("lat") double latitude) {
+    public Coordinates(@JsonProperty("lon") double longitude, @JsonProperty("lat") double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;
     }

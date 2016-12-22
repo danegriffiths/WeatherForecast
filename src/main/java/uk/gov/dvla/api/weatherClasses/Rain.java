@@ -13,7 +13,7 @@ public class Rain {
     private double rainDurationInHours;
 
     @JsonCreator
-    private Rain(@JsonProperty("3h") double volume) {
+    public Rain(@JsonProperty("3h") double volume) {
         this.rainVolume=volume;
     }
 

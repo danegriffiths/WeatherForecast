@@ -5,7 +5,7 @@ import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.skife.jdbi.v2.DBI;
-import uk.gov.dvla.jdbi.MyDAO;
+import uk.gov.dvla.jdbi.WeatherDAO;
 import uk.gov.dvla.health.TemplateHealthCheck;
 import uk.gov.dvla.resources.WeatherResource;
 
@@ -39,7 +39,7 @@ public class WeatherForecastGenerator extends Application<WeatherConfig> {
         // database
         final DBIFactory factory = new DBIFactory();
         final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "postgresql");
-        final MyDAO dao = jdbi.onDemand(MyDAO.class);
+        final WeatherDAO dao = jdbi.onDemand(WeatherDAO.class);
         final WeatherResource weatherResource = new WeatherResource(dao);
         environment.jersey().register(weatherResource);
 

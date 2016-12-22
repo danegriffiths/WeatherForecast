@@ -35,5 +35,9 @@ public class CityDetails {
     public String getCityName() {
         return cityName;
     }
+
+    public Coordinates getCoords() {
+        return coords;
+    }
 }
 

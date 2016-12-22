@@ -3,3 +3,4 @@
 target/classes/*
 *.log
 target/maven-status
+target/test-classes

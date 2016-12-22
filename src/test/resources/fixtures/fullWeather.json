@@ -1,0 +1,52 @@
+{"city":
+{"id":2636432,
+  "name":"Swansea",
+  "coord":
+  {"lon":-3.94323,
+    "lat":51.620789
+  },
+  "country":"GB",
+  "population":0,
+  "sys":
+  {"population":0
+  }
+},
+  "cod":"200",
+  "message":0.1411,
+  "cnt":40,
+  "list":
+  [
+    {"dt":1481047200,
+      "main":
+      {"temp":279.67,
+        "temp_min":277.255,
+        "temp_max":279.67,
+        "pressure":1021.62,
+        "sea_level":1039.05,
+        "grnd_level":1021.62,
+        "humidity":93,
+        "temp_kf":2.41
+      },
+      "weather":
+      [
+        {"id":500,
+          "main":"Rain",
+          "description":"light rain",
+          "icon":"10n"}
+      ],
+      "clouds":
+      {"all":92},
+      "wind":
+      {"speed":1.96,
+        "deg":99.0012
+      },
+      "rain":
+      {"3h":0.035
+      },
+      "sys":
+      {"pod":"n"
+      },
+      "dt_txt":"2016-12-06 18:00:00"
+    }
+  ]
+}

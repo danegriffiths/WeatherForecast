@@ -19,25 +19,29 @@ public class WeatherAPI {
     private String dateTime;
     private String forecast;
     private String temperature;
-    private List<WeatherAPI> weatherList;
+    private List<WeatherAPI> weatherList = new ArrayList<>();
 
-    private WeatherAPI(String city, String dateTime, String forecast, String temperature) {
+    public WeatherAPI() {
+        // Jackson deserialization
+    }
+
+    public WeatherAPI(String city, String dateTime, String forecast, String temperature) {
         this.city=city;
         this.dateTime=dateTime;
         this.forecast=forecast;
         this.temperature=temperature;
     }
 
-    private WeatherAPI() {
-        weatherList = new ArrayList<>();
-    }
+    //private WeatherAPI() {
+    //    weatherList = new ArrayList<>();
+    //}
 
     /**
      * Create a Weather API based on data from the website.
      * @param dataFromURL a CityForecast object which contains deserialised JSON data.
      */
     public WeatherAPI(CityForecastData dataFromURL) {
-        this();
+        //this();
         weatherList = populateWithURLData(dataFromURL);
     }
 
@@ -46,7 +50,7 @@ public class WeatherAPI {
      * @param dataFromDatabase a DatabaseWrapper object which contains data already saved to the database.
      */
     public WeatherAPI(List<DatabaseWrapper> dataFromDatabase) {
-        this();
+        //this();
         weatherList = getDBData(dataFromDatabase);
     }
 
@@ -54,7 +58,7 @@ public class WeatherAPI {
      * Method to get the name of the city.
      * @return string containing city name.
      */
-    private String getCity() {
+    public String getCity() {
         return city;
     }
 
@@ -62,7 +66,7 @@ public class WeatherAPI {
      * Method to get the date/time of day.
      * @return string containing date and time.
      */
-    private String getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
@@ -70,7 +74,7 @@ public class WeatherAPI {
      * Method to get the forecast at the time of day.
      * @return string containing the forecast.
      */
-    private String getForecast() {
+    public String getForecast() {
         return forecast;
     }
 
@@ -78,7 +82,7 @@ public class WeatherAPI {
      * Method to get the temperature at the time of day.
      * @return string containing temperature.
      */
-    private String getTemperature() {
+    public String getTemperature() {
         return temperature;
     }
 
@@ -129,16 +133,52 @@ public class WeatherAPI {
 
         JSONArray jsonArray = new JSONArray();
 
-        for (WeatherAPI listOfForecasts : weatherList) {
+        if(!weatherList.isEmpty()) {
+            for (WeatherAPI listOfForecasts : weatherList) {
 
-            //DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
+                //DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("city", listOfForecasts.getCity());
+                jsonObject.put("date/time", listOfForecasts.getDateTime());
+                jsonObject.put("forecast", listOfForecasts.getForecast());
+                jsonObject.put("temp", listOfForecasts.getTemperature());
+                jsonArray.add(jsonObject);
+            }
+            return jsonArray;
+        }
+        else{
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("city", listOfForecasts.getCity());
-            jsonObject.put("date/time", listOfForecasts.getDateTime());
-            jsonObject.put("forecast", listOfForecasts.getForecast());
-            jsonObject.put("temp", listOfForecasts.getTemperature());
+            jsonObject.put("city", this.getCity());
+            jsonObject.put("date/time", this.getDateTime());
+            jsonObject.put("forecast", this.getForecast());
+            jsonObject.put("temp", this.getTemperature());
             jsonArray.add(jsonObject);
         }
         return jsonArray;
+    }
+
+    public boolean equals(Object o, WeatherAPI x) {
+
+        if(!(o instanceof WeatherAPI)) {
+            return false;
+        }
+
+        final WeatherAPI weatherToCompare = (WeatherAPI)o;
+
+        return weatherToCompare.getCity().equals(x.getCity()) &&
+                weatherToCompare.getDateTime().equals(x.getDateTime()) &&
+                weatherToCompare.getForecast().equals(x.getForecast()) &&
+                weatherToCompare.getTemperature().equals(x.getTemperature());
+    }
+
+    @Override
+    public String toString() {
+        return "WeatherAPI{" +
+                "city='" + city + '\'' +
+                ", dateTime='" + dateTime + '\'' +
+                ", forecast='" + forecast + '\'' +
+                ", temperature='" + temperature + '\'' +
+                ", weatherList=" + weatherList +
+                '}';
     }
 }
