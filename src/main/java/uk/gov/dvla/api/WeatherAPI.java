@@ -3,7 +3,7 @@ package uk.gov.dvla.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import uk.gov.dvla.api.weatherClasses.CityForecastData;
+import uk.gov.dvla.api.weatherClasses.URLDataMappedToSubClasses;
 import uk.gov.dvla.jdbi.DatabaseWrapper;
 
 import java.text.DecimalFormat;
@@ -40,7 +40,7 @@ public class WeatherAPI {
      * Create a Weather API based on data from the website.
      * @param dataFromURL a CityForecast object which contains deserialised JSON data.
      */
-    public WeatherAPI(CityForecastData dataFromURL) {
+    public WeatherAPI(URLDataMappedToSubClasses dataFromURL) {
         //this();
         weatherList = populateWithURLData(dataFromURL);
     }
@@ -90,7 +90,7 @@ public class WeatherAPI {
      * Method to get convert the deserialised JSON data into a WeatherAPI object..
      * @return a list of type WeatherAPI containing the entire forecast for a city.
      */
-    private List<WeatherAPI> populateWithURLData(CityForecastData cfd) {
+    private List<WeatherAPI> populateWithURLData(URLDataMappedToSubClasses cfd) {
 
         DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
 

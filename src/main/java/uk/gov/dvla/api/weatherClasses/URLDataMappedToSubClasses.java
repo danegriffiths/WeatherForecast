@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 /**
- * Class which reads in data from website, and assigns the json property to the specific variable within CityForecastData.
+ * Class which reads in data from website, and assigns the json property to the specific variable within URLDataMappedToSubClasses.
  * Created by dane on 10/10/16.
  */
-public class CityForecastData {
+public class URLDataMappedToSubClasses {
 
     private CityDetails city;
     private int openWeatherInternalParameter;
@@ -18,9 +18,9 @@ public class CityForecastData {
     private ArrayList<ListOfForecasts> forecasts;
 
     @JsonCreator
-    public CityForecastData(@JsonProperty("city") CityDetails city, @JsonProperty("cod") int openWeatherInternalParameter,
-                            @JsonProperty("message") double openWeatherInternalMessage, @JsonProperty("cnt") int countOfCitiesCirculatingCityChoice,
-                            @JsonProperty("list") ArrayList<ListOfForecasts> forecasts){
+    public URLDataMappedToSubClasses(@JsonProperty("city") CityDetails city, @JsonProperty("cod") int openWeatherInternalParameter,
+                                     @JsonProperty("message") double openWeatherInternalMessage, @JsonProperty("cnt") int countOfCitiesCirculatingCityChoice,
+                                     @JsonProperty("list") ArrayList<ListOfForecasts> forecasts){
         this.city=city;
         this.openWeatherInternalParameter=openWeatherInternalParameter;
         this.openWeatherInternalMessage=openWeatherInternalMessage;

@@ -4,9 +4,10 @@ import io.dropwizard.Application;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.views.ViewBundle;
 import org.skife.jdbi.v2.DBI;
-import uk.gov.dvla.jdbi.WeatherDAO;
 import uk.gov.dvla.health.TemplateHealthCheck;
+import uk.gov.dvla.jdbi.WeatherDAO;
 import uk.gov.dvla.resources.WeatherResource;
 
 /**
@@ -32,6 +33,7 @@ public class WeatherForecastGenerator extends Application<WeatherConfig> {
 
     @Override
     public void initialize(Bootstrap<WeatherConfig> bootstrap) {
+        bootstrap.addBundle(new ViewBundle<WeatherConfig>());
     }
 
     public void run(WeatherConfig configuration, Environment environment) throws Exception {
