@@ -1,5 +1,6 @@
 package uk.gov.dvla.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,8 +8,7 @@ import uk.gov.dvla.api.weatherClasses.URLDataMappedToSubClasses;
 import uk.gov.dvla.jdbi.DatabaseWrapper;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A class which is constructed in several ways, which prints the 5 day weatherList forecast of a city to the web browser.
@@ -32,10 +32,6 @@ public class WeatherAPI {
         this.temperature=temperature;
     }
 
-    //private WeatherAPI() {
-    //    weatherList = new ArrayList<>();
-    //}
-
     /**
      * Create a Weather API based on data from the website.
      * @param dataFromURL a CityForecast object which contains deserialised JSON data.
@@ -58,6 +54,7 @@ public class WeatherAPI {
      * Method to get the name of the city.
      * @return string containing city name.
      */
+    @JsonIgnore
     public String getCity() {
         return city;
     }
@@ -66,6 +63,7 @@ public class WeatherAPI {
      * Method to get the date/time of day.
      * @return string containing date and time.
      */
+    @JsonIgnore
     public String getDateTime() {
         return dateTime;
     }
@@ -74,6 +72,7 @@ public class WeatherAPI {
      * Method to get the forecast at the time of day.
      * @return string containing the forecast.
      */
+    @JsonIgnore
     public String getForecast() {
         return forecast;
     }
@@ -82,23 +81,33 @@ public class WeatherAPI {
      * Method to get the temperature at the time of day.
      * @return string containing temperature.
      */
+    @JsonIgnore
     public String getTemperature() {
         return temperature;
+    }
+
+    /**
+     * ethod to get the list of WeatherAPI properties.
+     * @return indexed list of a cities properties.
+     */
+    @JsonIgnore
+    public List<WeatherAPI> getWeatherList() {
+        return weatherList;
     }
 
     /**
      * Method to get convert the deserialised JSON data into a WeatherAPI object..
      * @return a list of type WeatherAPI containing the entire forecast for a city.
      */
-    private List<WeatherAPI> populateWithURLData(URLDataMappedToSubClasses cfd) {
+    private List<WeatherAPI> populateWithURLData(URLDataMappedToSubClasses urlWeather) {
 
         DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
 
-        for (int i = 0; i < cfd.getForecasts().size(); i++) {
-            this.city = cfd.getCity().getCityName();
-            this.dateTime = cfd.getForecasts().get(i).getDateTime();
-            this.forecast = cfd.getForecasts().get(i).getWeatherDescription().get(0).getDetailedWeatherType();
-            this.temperature = df2.format(cfd.getForecasts().get(i).getWeatherTemp().getTemperature());
+        for (int i = 0; i < urlWeather.getForecasts().size(); i++) {
+            this.city = urlWeather.getCity().getCityName();
+            this.dateTime = urlWeather.getForecasts().get(i).getDateTime();
+            this.forecast = urlWeather.getForecasts().get(i).getWeatherDescription().get(0).getDetailedWeatherType();
+            this.temperature = df2.format(urlWeather.getForecasts().get(i).getWeatherTemp().getTemperature());
 
             weatherList.add(new WeatherAPI(city, dateTime, forecast, temperature));
         }
@@ -135,8 +144,6 @@ public class WeatherAPI {
 
         if(!weatherList.isEmpty()) {
             for (WeatherAPI listOfForecasts : weatherList) {
-
-                //DecimalFormat df2 = new DecimalFormat("#.#\u00B0C");
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("city", listOfForecasts.getCity());
                 jsonObject.put("date/time", listOfForecasts.getDateTime());

@@ -33,7 +33,7 @@ public class WeatherForecastGenerator extends Application<WeatherConfig> {
 
     @Override
     public void initialize(Bootstrap<WeatherConfig> bootstrap) {
-        bootstrap.addBundle(new ViewBundle<WeatherConfig>());
+        bootstrap.addBundle(new ViewBundle<>());
     }
 
     public void run(WeatherConfig configuration, Environment environment) throws Exception {

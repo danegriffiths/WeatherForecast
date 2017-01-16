@@ -52,8 +52,8 @@ public class WeatherResourceTest {
 
     @Test
     public void testGetCity() {
-        //System.out.println(resources.client().target("WEATHER-info?CITY=swansea").request().get(URLDataMappedToSubClasses.class).getCity().getCityName());
-//        String response = resources.client().target("/weather-info?CITY=swansea").request().get(String.class);
+//        System.out.println(resources.client().target("WEATHER-info?city=" + CITY).request().get(URLDataMappedToSubClasses.class).getCity().getCityName());
+//        String response = resources.client().target("/weather-info?city=" + CITY).request().get(String.class);
 //        System.out.println( response );
 
 
