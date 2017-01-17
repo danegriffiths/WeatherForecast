@@ -1,0 +1,44 @@
+h1 {
+    text-align:center;
+}
+body {
+    border-style: inset;
+    border: 3px solid rgb(79, 179, 200);
+    border-radius: 15px;
+}
+
+div {
+    border: 2px solid rgb(255, 255, 255);
+    border-radius:15px;
+    margin:25px 25px;
+    background-color: rgb(255, 255, 200);
+}
+
+table {
+    margin: auto;
+    margin-top: 20px;
+}
+#forecasts table, #forecasts th, #forecasts td {
+    To get rid of the gap---border-collapse:collapse;
+    border: 1px solid black;
+    text-align:center;
+    font-family:Arial;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#forecasts th {
+    background-color:rgb(255, 255, 150);
+    font-size: 120%;
+    padding: 10px;
+}
+
+#forecasts tr:hover{background-color:rgb(255, 255, 150)}
+
+#forecasts td {
+    text-transform: capitalize;
+}
+
+#forecasts td {
+    padding: 0px 10px;
+}
